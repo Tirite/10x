@@ -47,16 +47,26 @@ $env:HMR_HOST="192.168.1.20"; docker compose up dev
 
 Safari n'autorise l'ajout à l'écran d'accueil d'une PWA installable qu'en **HTTPS**. Deux voies :
 
-**A. Hébergement gratuit (recommandé).** Publier le contenu de `dist/` sur GitHub Pages ou
-Netlify, ouvrir l'adresse dans Safari, puis *Partager → Sur l'écran d'accueil*. Un seul accès
-internet, le temps de l'installation : ensuite le service worker sert tout depuis le cache et
-l'app fonctionne en mode avion.
+**A. GitHub Pages (recommandé).** Le workflow [`deploy.yml`](.github/workflows/deploy.yml)
+teste, construit et déploie à chaque push sur `main`.
 
-Pour un déploiement sur un sous-chemin (`https://user.github.io/10x/`), construire avec :
+> **Activation, une seule fois** : dépôt → *Settings* → *Pages* → *Build and deployment* →
+> *Source* : **GitHub Actions**. Le dépôt doit être **public**, sauf abonnement GitHub Pro.
+> Cette étape ne peut pas être automatisée : le `GITHUB_TOKEN` du workflow n'a pas le droit de
+> créer le site (`Resource not accessible by integration`).
+
+Le site est ensuite servi sur `https://<utilisateur>.github.io/<dépôt>/`. Le workflow passe
+`BASE_PATH=/<dépôt>/` au build, ce qui est indispensable : sans cela les assets, le manifeste
+et le service worker seraient cherchés à la racine du domaine. Pour reproduire ce build en
+local :
 
 ```powershell
 docker compose run --rm -e BASE_PATH=/10x/ dev npm run build
 ```
+
+Ouvrir ensuite l'adresse dans Safari, puis *Partager → Sur l'écran d'accueil*. Un seul accès
+internet, le temps de l'installation : ensuite le service worker sert tout depuis le cache et
+l'app fonctionne en mode avion.
 
 **B. Tout local.** Servir `dist/` en HTTPS sur le réseau local avec un certificat `mkcert`, et
 installer le certificat racine comme profil de confiance sur l'iPhone (Réglages → Général →
