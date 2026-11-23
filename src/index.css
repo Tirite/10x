@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+
+/* Palette de l'application — un seul endroit à modifier. */
+@theme {
+  --color-bg: #0b0f1a;
+  --color-surface: #131a2a;
+  --color-surface-2: #1b2437;
+  --color-border: #263149;
+  --color-ink: #e8edf7;
+  --color-muted: #8d9ab4;
+  --color-accent: #6366f1;
+  --color-good: #10b981;
+  --color-mid: #f59e0b;
+  --color-bad: #ef4444;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-bg);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    /* Rendu « application » et non « page web » sur iOS. */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    overscroll-behavior-y: none;
+  }
+
+  /* La saisie de texte reste sélectionnable. */
+  input,
+  textarea {
+    -webkit-user-select: text;
+    user-select: text;
+    font-size: 16px; /* évite le zoom automatique de Safari iOS */
+  }
+
+  button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+@utility safe-top {
+  padding-top: max(env(safe-area-inset-top), 0.75rem);
+}
+
+@utility safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+}
+
+/* Curseur 0-5 au doigt : piste épaisse, pastille large (cible ≥ 44 px). */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+}
+.range::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-surface-2);
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  margin-top: -11px;
+  border-radius: 9999px;
+  background: var(--color-ink);
+  border: 3px solid var(--color-accent);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.45);
+}
+.range::-moz-range-track {
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-surface-2);
+}
+.range::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border: 3px solid var(--color-accent);
+  border-radius: 9999px;
+  background: var(--color-ink);
+}

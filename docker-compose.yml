@@ -1,0 +1,42 @@
+services:
+  # Serveur de développement Vite, accessible depuis l'iPhone sur le Wi-Fi local :
+  #   http://<IP-du-PC>:5273   (port hote par defaut, voir DEV_PORT)
+  dev:
+    build: .
+    image: app10x-dev
+    init: true
+    ports:
+      # Port hote configurable : 5173 peut etre pris par un autre projet.
+      - "${DEV_PORT:-5273}:5173"
+    volumes:
+      - .:/app
+      # Volume nommé : un bind-mount Windows sur node_modules est lent
+      # et casse les binaires natifs (rollup, esbuild).
+      - node_modules:/app/node_modules
+    environment:
+      # Les événements inotify ne traversent pas le bind-mount Windows.
+      - CHOKIDAR_USEPOLLING=1
+      - WATCHPACK_POLLING=true
+      # Renseigner l'IP LAN du PC pour que le HMR fonctionne depuis l'iPhone :
+      #   HMR_HOST=192.168.1.20 docker compose up dev
+      - HMR_HOST=${HMR_HOST:-}
+      # Port vu depuis le navigateur (cote hote), pour le client HMR.
+      - DEV_PORT=${DEV_PORT:-5273}
+    command: npm run dev
+    stdin_open: true
+    tty: true
+
+  # Build de production + aperçu (sert à valider le service worker et le mode hors-ligne).
+  preview:
+    build: .
+    image: app10x-dev
+    init: true
+    ports:
+      - "${PREVIEW_PORT:-4273}:4173"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    command: sh -c "npm run build && npm run preview"
+
+volumes:
+  node_modules:
