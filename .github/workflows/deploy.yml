@@ -39,7 +39,12 @@ jobs:
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
 
+      # `enablement` active GitHub Pages en mode « GitHub Actions » dès le
+      # premier passage : aucun réglage manuel n'est nécessaire dans l'onglet
+      # Settings du dépôt.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
